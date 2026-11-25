@@ -72,6 +72,7 @@ spec:
           emptyDir:
             medium: Memory
             sizeLimit: 1Mi
+        {{ with .Values.extraVolumes }}{{ toYaml . | nindent 8 }}{{ end }}
       containers:
         - name: {{ .Chart.Name }}
           image: {{ if .Values.operator.image.registry }}{{ .Values.operator.image.registry | trimSuffix "/" }}/{{ end }}{{ .Values.operator.image.repository }}:{{ include "altinity-clickhouse-operator.operator.tag" . }}
@@ -97,6 +98,7 @@ spec:
               mountPath: /etc/clickhouse-operator/chk/users.d
             - name: clickhouse-operator-ipc
               mountPath: /etc/clickhouse-operator-ipc
+            {{ with .Values.operator.extraVolumeMounts }}{{ toYaml . | nindent 12 }}{{ end }}
           env:
             # Pod-specific
             # spec.nodeName: ip-172-20-52-62.ec2.internal
@@ -188,6 +190,7 @@ spec:
               mountPath: /etc/clickhouse-operator/chk/users.d
             - name: clickhouse-operator-ipc
               mountPath: /etc/clickhouse-operator-ipc
+            {{ with .Values.metrics.extraVolumeMounts }}{{ toYaml . | nindent 12 }}{{ end }}
           env:
             # Pod-specific
             # spec.nodeName: ip-172-20-52-62.ec2.internal
